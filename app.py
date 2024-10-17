@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify
 import csv
-from lxml import etree
-
+from lxml import etree, isoschematron
+from io import BytesIO
 
 app = Flask(__name__)
 
@@ -42,6 +42,14 @@ def transfer():
     if receiver_id not in users:
         return jsonify({"error": "Invalid receiver account ID, transaction was not processed"}), 514
     
+    # Reject transactions where sender and receiver are the same
+    if sender_id == receiver_id:
+        return jsonify({"error": "Sender and receiver account IDs cannot be the same"}), 517
+    
+    # Check for invalid amount (0.0 or negative)
+    if amount <= 0.0:
+        return jsonify({"error": "Invalid amount, transaction was not processed"}), 517
+    
     # Check sender balance
     sender_balance = float(users[sender_id]['balance'])
     if sender_balance < amount:
@@ -75,6 +83,14 @@ def xml_transfer():
     # Check blacklisted countries
     if country_code_sender in blacklisted_countries or country_code_receiver in blacklisted_countries:
         return jsonify({"error": "Transaction rejected, blacklisted country involved"}), 515
+
+    # Check for invalid amount (0.0 or negative)
+    if amount <= 0.0:
+        return jsonify({"error": "Invalid amount, transaction was not processed"}), 517
+
+    # Reject transactions where sender and receiver IDs are the same
+    if sender_id == receiver_id:
+        return jsonify({"error": "Sender and receiver account IDs cannot be the same"}), 517
 
     # The rest of the logic is similar to the previous transfer route
     if sender_id not in users:
@@ -123,6 +139,10 @@ def remittance_transfer():
         fee = amount * 0.015
 
     total_amount = amount + fee
+
+    # Check for invalid amount (0.0 or negative)
+    if amount <= 0.0:
+        return jsonify({"error": "Invalid amount, transaction was not processed"}), 517
 
     # Check if the sender exists
     if sender_id not in users:
