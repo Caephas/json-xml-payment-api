@@ -1,0 +1,39 @@
+http://127.0.0.1:5000/transfer POST
+
+{
+    "sender_id": "1001",
+    "receiver_id": "1005",
+    "amount": 100.00,
+    "currency": "USD"
+}
+
+http://127.0.0.1:5000/xmltransfer POST
+<Payment xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <Payer>
+        <IBAN>IBAN2764549738</IBAN>
+        <SenderID>1005</SenderID>
+        <ReceiverID>1005</ReceiverID>
+        <CountryCodeSender>USA</CountryCodeSender>
+        <CountryCodeReceiver>USA</CountryCodeReceiver>
+    </Payer>
+    <Amount>10.00</Amount>
+</Payment>
+
+
+http://127.0.0.1:5000/remittance
+
+<Payment xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <Payer>
+        <SenderIBAN>IBAN123456789</SenderIBAN>
+        <SenderID>1001</SenderID>
+        <CountryCodeSender>USA</CountryCodeSender>
+        <RemittanceStructured>No</RemittanceStructured>
+        <RemittanceUnstructured>Yes</RemittanceUnstructured>
+    </Payer>
+    <Payee>
+        <RecieverIBAN>IBAN987654321</RecieverIBAN>
+        <ReceiverID>1005</ReceiverID>
+        <CountryCodeReceiver>USA</CountryCodeReceiver>
+    </Payee>
+    <Amount>100.00</Amount>
+</Payment>
