@@ -1,0 +1,23 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <!-- Global element declaration for Payment -->
+  <xs:element name="Payment">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Payer" type="PartyType"/>
+        <xs:element name="Payee" type="PartyType"/>
+        <xs:element name="Amount" type="xs:decimal"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <!-- Global complex type declaration for PartyType -->
+  <xs:complexType name="PartyType">
+    <xs:sequence>
+      <xs:element name="IBAN" type="xs:string"/>
+      <xs:element name="SenderID" type="xs:string"/>
+      <xs:element name="ReceiverID" type="xs:string"/>
+      <xs:element name="CountryCodeSender" type="xs:string"/>
+      <xs:element name="CountryCodeReceiver" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:schema>
